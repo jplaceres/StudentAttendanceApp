@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Student Attendance App</string>
+    <string name="login">Login</string>
+    <string name="sign_in">Sign in</string>
+    <string name="username">Username</string>
+    <string name="password">password</string>
+    <string name="new_user">New? Click Here to Sign up!</string>
 </resources>
