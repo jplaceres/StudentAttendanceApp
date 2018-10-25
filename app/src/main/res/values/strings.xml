@@ -1,8 +1,28 @@
 <resources>
     <string name="app_name">Student Attendance App</string>
+<<<<<<< HEAD
     <string name="login">Login</string>
     <string name="sign_in">Sign in</string>
     <string name="username">Username</string>
     <string name="password">password</string>
     <string name="new_user">New? Click Here to Sign up!</string>
+=======
+
+    <string name="name_prompt">Enter Your Name and University ID</string>
+    <string name="fName">First Name</string>
+    <string name="lName">Last Name</string>
+    <string name="uID">University ID</string>
+
+    <string name="create_prompt">Enter Your University Email and Create A Password</string>
+    <string name="email">University E-mail</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm Password</string>
+
+    <string name="next">Next</string>
+
+    <string name="create_account">Create an Account</string>
+
+
+
+>>>>>>> 70416e04ce3fb05960ca3477fa5e051dc7daf776
 </resources>
