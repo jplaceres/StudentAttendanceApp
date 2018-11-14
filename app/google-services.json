@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "275193107128",
+    "firebase_url": "https://sadapp2018.firebaseio.com",
+    "project_id": "sadapp2018",
+    "storage_bucket": "sadapp2018.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:275193107128:android:9cd8aeeea9bec9cb",
+        "android_client_info": {
+          "package_name": "com.example.jplac.myapplication"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "275193107128-j4kmmdnl29o91mula6dsa8ci8sntbn1q.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.jplac.myapplication",
+            "certificate_hash": "5353d95e893f6b331ec53f653afdd95716b9d74d"
+          }
+        },
+        {
+          "client_id": "275193107128-9827dqcfrle0cgqgq6ja4qq5jmrbfosr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBgFiVNdpBjRiu2qr-TG5C8JIQYyDa8WpY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "275193107128-9827dqcfrle0cgqgq6ja4qq5jmrbfosr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
