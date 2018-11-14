@@ -7,18 +7,30 @@
         android:layout_height="wrap_content"
         android:text="@string/login"
         android:layout_centerHorizontal="true"
-        android:textSize="30sp"
-        android:layout_above="@id/editText"
+        android:layout_marginTop="46dp"
+        android:textSize="40sp"
+
         />
+
     <TextView
-        android:id="@+id/textView1"
+        android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/new_user"
+        android:layout_below="@+id/textView1"
+        android:layout_centerHorizontal="true"
+        android:textSize="15sp"
+        android:text="@string/login_prompt" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/button1"
+
         android:layout_centerHorizontal="true"
         android:onClick="createUser"
-        />
+        android:text="@string/new_user"
+        android:textSize="15sp" />
 
     <EditText
         android:layout_above="@+id/editText2"
@@ -27,7 +39,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:ems="10"
-        android:text="@string/username"
+        android:hint="@string/username"
         android:layout_centerHorizontal="true"
         android:inputType="textEmailAddress"
       />
@@ -39,17 +51,22 @@
         android:ems="10"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
+        android:layout_marginTop="36dp"
 
-        android:text="@string/password"
+        android:hint="@string/password"
 
         android:inputType="textPassword"/>
     <Button
         android:id="@+id/button1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/editText2"
         android:layout_centerHorizontal="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="36dp"
         android:text="@string/sign_in"
-        android:layout_below="@+id/editText2"/>
+
+        />
 
 
 </RelativeLayout>

@@ -4,38 +4,36 @@
 
     <EditText
         android:id="@+id/editText"
-        android:layout_width="wrap_content"
+        android:layout_width="268dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="0dp"
-        android:layout_marginTop="156dp"
-        android:layout_marginEnd="0dp"
+        android:layout_above="@id/editText2"
+        android:layout_alignStart="@+id/editText2"
+        android:layout_marginStart="1dp"
+        android:layout_marginBottom="36dp"
         android:ems="10"
         android:hint="@string/fName"
         android:inputType="textPersonName" />
 
     <EditText
         android:id="@+id/editText2"
-        android:layout_width="wrap_content"
+        android:layout_width="268dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignStart="@+id/editText"
-        android:layout_below="@+id/editText"
-        android:layout_marginTop="33dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
         android:ems="10"
-        android:inputType="textPersonName"
-        android:hint="@string/lName"/>
+
+        android:hint="@string/lName"
+        android:inputType="textPersonName" />
 
     <EditText
         android:id="@+id/editText3"
-        android:layout_width="wrap_content"
+        android:layout_width="268dp"
         android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/editText"
         android:layout_below="@+id/editText2"
-        android:layout_alignStart="@+id/editText2"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="33dp"
+
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="36dp"
         android:ems="10"
         android:hint="@string/uID"
         android:inputType="textPassword" />
@@ -46,8 +44,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="248dp"
-        android:layout_marginBottom="42dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="145dp"
+        android:layout_marginBottom="35dp"
         android:onClick="save"
         android:text="@string/next" />
 
