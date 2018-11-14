@@ -26,6 +26,15 @@
     <string name="course_num">Course</string>
     <string name="section">Section</string>
 
+    <string name="course_list">Your Course List</string>
+    <string name="course_prompt">Select A Course To Take Your Attendance</string>
+    <string name="addCourse">Add A Course</string>
+
+    <string name="present">PRESENT!</string>
+    <string name="removeCourse">Remove Course</string>
+
+
+
 
 
 

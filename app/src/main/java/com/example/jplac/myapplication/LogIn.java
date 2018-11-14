@@ -56,11 +56,9 @@ public class LogIn extends AppCompatActivity {
                                     Toast.LENGTH_SHORT).show();
                             updateUI(null);
                         }
-
                         // ...
                     }
                 });
-
     }
 
 
@@ -71,7 +69,10 @@ public class LogIn extends AppCompatActivity {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         updateUI(currentUser);
     }
-    
+
+    public void updateUI(FirebaseUser user){
+
+    }
 
 //    private void updateUI(FirebaseUser user) {
 //        hideProgressDialog();
@@ -97,9 +98,4 @@ public class LogIn extends AppCompatActivity {
 //
 //        }
 //    }
-
-
-
-
-
 }
