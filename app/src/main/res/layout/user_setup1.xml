@@ -47,7 +47,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginStart="145dp"
         android:layout_marginBottom="35dp"
-        android:onClick="save"
+        android:onClick="saveNameId"
         android:text="@string/next" />
 
     <TextView
