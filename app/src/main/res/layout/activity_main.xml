@@ -35,10 +35,11 @@
         android:textSize="15sp" />
 
     <ListView
+        android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/textView2"
         android:layout_above="@id/button"
+        android:layout_below="@+id/textView2"
         android:layout_centerHorizontal="true" />
 
 </RelativeLayout>
