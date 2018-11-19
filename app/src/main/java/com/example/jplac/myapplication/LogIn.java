@@ -23,6 +23,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+
 import org.w3c.dom.Text;
 //import com.google.firebase.quickstart.auth.R;
 
@@ -47,10 +48,12 @@ public class LogIn extends AppCompatActivity {
         setContentView(R.layout.login_layout);
 
         //get variables from XML
-
+        title = findViewById(R.id.textView1);
+        prompt = findViewById(R.id.textView3);
         emailET = (EditText) findViewById(R.id.editText);
         passwordET = (EditText) findViewById(R.id.editText2);
         signIn = (Button) findViewById(R.id.button1);
+        createNew = findViewById(R.id.textView2);
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -116,6 +119,7 @@ public class LogIn extends AppCompatActivity {
 
 
     public void updateUI(FirebaseUser user){
+
 
     }
 

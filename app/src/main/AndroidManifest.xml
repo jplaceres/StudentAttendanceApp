@@ -18,6 +18,6 @@
         </activity>
         <activity android:name=".MainActivity" />
         <activity android:name=".SetupInitial"/>
-        <activity android:name=".CheckIn"></activity>
+        <activity android:name=".CheckIn"/>
     </application>
 </manifest>
