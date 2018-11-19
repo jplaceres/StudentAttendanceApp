@@ -17,8 +17,12 @@
             </intent-filter>
         </activity>
         <activity android:name=".MainActivity" />
-        <activity android:name=".SetupInitial" />
+        <activity android:name=".SetupInitial">
+            <intent-filter>
 
+            </intent-filter>
+        </activity>
+        <activity android:name=".CheckIn"></activity>
     </application>
 
 
