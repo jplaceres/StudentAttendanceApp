@@ -1,4 +1,7 @@
+//Robert Hoover
+
 package com.example.jplac.myapplication;
+
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -35,6 +38,7 @@ public class SetupInitial extends AppCompatActivity {
         editTextFirstName = (EditText) findViewById(R.id.editText);
         editTextLastName = (EditText) findViewById(R.id.editText2);
         editTextStudentID = (EditText) findViewById(R.id.editText3);
+
     }
 
     public void saveNameId(View v){
