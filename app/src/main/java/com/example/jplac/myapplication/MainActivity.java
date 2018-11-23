@@ -23,7 +23,7 @@ import com.google.firebase.auth.AuthResult;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = "EmailPassword";
+    private static final String TAG = "TEST";
 
     private TextView title;
     private TextView prompt;
@@ -51,14 +51,9 @@ public class MainActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-        //String email = emailET.getText().toString();
-        //final String password = passwordET.getText().toString();
-
         signIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MainActivity.this, "SignIn pressed", Toast.LENGTH_LONG).show();
-
                 signIn(emailET.getText().toString(), passwordET.getText().toString());
 
                 Intent intent = new Intent(MainActivity.this, MyCourseList.class);
@@ -69,8 +64,7 @@ public class MainActivity extends AppCompatActivity {
         createUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                Toast.makeText(MainActivity.this, "createNew pressed", Toast.LENGTH_LONG).show();
+                //Toast.makeText(MainActivity.this, "createNew pressed", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(MainActivity.this, SetupInitial.class);
                 startActivity(intent);
             }
@@ -78,39 +72,38 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void signIn(String email, String password) {
-        mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
 
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                if (task.isSuccessful()) {
-                                    // Sign in success, update UI with the signed-in user's information
-                                    Log.d(TAG, "signInWithEmail:success");
-                                    FirebaseUser user = mAuth.getCurrentUser();
-                                    //updateUI(user);
-                                } else {
-                                    // If sign in fails, display a message to the user.
-                                    Log.w(TAG, "signInWithEmail:failure", task.getException());
-                                    Toast.makeText(MainActivity.this, "Authentication failed.",
-                                            Toast.LENGTH_SHORT).show();
-                                    //updateUI(null);
-                                }
-//                        // [START_EXCLUDE]
+        //Goes through the Firebase Authentication to sign in
+        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    // Sign in success, update UI with the signed-in user's information
+                    Log.println(Log.ASSERT, TAG, "SUCCESS!!");
+
+                    FirebaseUser user = mAuth.getCurrentUser();
+                    //updateUI(user);
+                    } else {
+                    // If sign in fails, display a message to the user.
+                    Log.w(TAG, "signInWithEmail:failure", task.getException());
+                    Toast.makeText(MainActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                    //updateUI(null);
+                    }
+//                  // [START_EXCLUDE]
 //
-//                        if (!task.isSuccessful()) {
-//                            mStatusTextView.setText(R.string.auth_failed);
+//                  if (!task.isSuccessful()) {
+//                  mStatusTextView.setText(R.string.auth_failed);
+//                  }
 //
-//                        }
+//                  hideProgressDialog();
 //
-//                        hideProgressDialog();
-//
-//                        // [END_EXCLUDE]                    }
+//                  // [END_EXCLUDE]                    }
                             };
                         });
     }
 
-
-                        //checks if user is already signed in
+//  //checks if user is already signed in
 
 //    @Override
 //    public void onStart() {
@@ -125,28 +118,30 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(MainActivity.this, "updateUI", Toast.LENGTH_LONG).show();
         }
 
-//    private void updateUI(FirebaseUser user) {
-//        hideProgressDialog();
-//        if (user != null) {
-//            mStatusTextView.setText(getString(R.string.emailpassword_status_fmt,
-//                    user.getEmail(), user.isEmailVerified()));
-//            mDetailTextView.setText(getString(R.string.firebase_status_fmt, user.getUid()));
-//
-//            findViewById(R.id.emailPasswordButtons).setVisibility(View.GONE);
-//            findViewById(R.id.emailPasswordFields).setVisibility(View.GONE);
-//            findViewById(R.id.signedInButtons).setVisibility(View.VISIBLE);
-//
-//            findViewById(R.id.verifyEmailButton).setEnabled(!user.isEmailVerified());
-//
-//        } else {
-//
-//            mStatusTextView.setText(R.string.signed_out);
-//            mDetailTextView.setText(null);
-//
-//            findViewById(R.id.emailPasswordButtons).setVisibility(View.VISIBLE);
-//            findViewById(R.id.emailPasswordFields).setVisibility(View.VISIBLE);
-//            findViewById(R.id.signedInButtons).setVisibility(View.GONE);
-//
-//        }
-//    }
+/*    private void updateUI(FirebaseUser user) {
+        hideProgressDialog();
+        if (user != null) {
+            mStatusTextView.setText(getString(R.string.emailpassword_status_fmt,
+                    user.getEmail(), user.isEmailVerified()));
+            mDetailTextView.setText(getString(R.string.firebase_status_fmt, user.getUid()));
+
+            findViewById(R.id.emailPasswordButtons).setVisibility(View.GONE);
+            findViewById(R.id.emailPasswordFields).setVisibility(View.GONE);
+            findViewById(R.id.signedInButtons).setVisibility(View.VISIBLE);
+
+            findViewById(R.id.verifyEmailButton).setEnabled(!user.isEmailVerified());
+
+        } else {
+
+            mStatusTextView.setText(R.string.signed_out);
+            mDetailTextView.setText(null);
+
+            findViewById(R.id.emailPasswordButtons).setVisibility(View.VISIBLE);
+            findViewById(R.id.emailPasswordFields).setVisibility(View.VISIBLE);
+            findViewById(R.id.signedInButtons).setVisibility(View.GONE);
+
+        }
+//    }*/
+
+
     }
