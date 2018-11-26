@@ -19,6 +19,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 
 public class SetupInitial extends AppCompatActivity {
@@ -26,7 +28,7 @@ public class SetupInitial extends AppCompatActivity {
     //As such we declare the necessary components of our setup: First and last name, email, student ID, and the password.
     //In order to take the input from the user, we must use editTexts, these edit texts will be matched to the corresponding edit text
     //Then read from.
-    private FirebaseAuth mAuth;
+    FirebaseAuth mAuth;
     private String firstName;
     private String email;
     private String password;
@@ -39,12 +41,14 @@ public class SetupInitial extends AppCompatActivity {
     private EditText editTextEmail;
     private EditText editTextPassword;
     private EditText editTextPasswordConfirm;
+    DatabaseReference mDatabase;
 
     //This is the oncreate, which will set the contentView, then obtain the edit texts by id, and match them to the corresponding edit text.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
         setContentView(R.layout.user_setup1);
         //nextButton = (Button) findViewById(R.id.button);
         editTextFirstName = (EditText) findViewById(R.id.editText);
@@ -67,7 +71,7 @@ public class SetupInitial extends AppCompatActivity {
         editTextEmail = (EditText) findViewById(R.id.editText);
         editTextPassword = (EditText) findViewById(R.id.editText2);
         editTextPasswordConfirm = (EditText) findViewById(R.id.editText3);
-
+        Toast.makeText(this,editTextFirstName + " " + editTextLastName + " " + editTextStudentID, Toast.LENGTH_LONG).show();
     }
 
 
@@ -81,16 +85,16 @@ public class SetupInitial extends AppCompatActivity {
         password = editTextPassword.getText().toString();
         passwordConfirm = editTextPasswordConfirm.getText().toString();
 
-        if (password == passwordConfirm && password.length() > 4){
-
+        if (password.equals(passwordConfirm) && password.length() >= 4){
 
             mAuth.createUserWithEmailAndPassword(email, password);
+            addUserToDatabase(email,firstName,lastName,studentID);
 
 
-            //Intent intentApp = new Intent(SetupInitial.this,);
-            //SetupInitial.this.startActivity(intentApp);
+            Intent intentApp = new Intent(SetupInitial.this,CourseSearch.class);
+            SetupInitial.this.startActivity(intentApp);
         }
-        if(password != passwordConfirm){
+        if(!password.equals(passwordConfirm)){
             Toast.makeText(this,"Passwords do not match, please check again",Toast.LENGTH_LONG).show();
 
         }
@@ -99,4 +103,8 @@ public class SetupInitial extends AppCompatActivity {
         }
     }
 
+    public void addUserToDatabase(String userEmail, String fName, String lName, String userID){
+        User user = new User(fName, userEmail, lName);
+        mDatabase.child("Student").child(userID).setValue(user);
+    }
 }

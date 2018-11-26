@@ -26,7 +26,7 @@ public class CheckIn extends AppCompatActivity {
     }
     public void returnMessage(boolean error){
         if (error){
-            Toast.makeText(this,"Error with your photo tryagain",Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,"Error with your photo try again",Toast.LENGTH_SHORT).show();
         }
         else{
             Toast.makeText(this, "Confirmed", Toast.LENGTH_SHORT).show();
