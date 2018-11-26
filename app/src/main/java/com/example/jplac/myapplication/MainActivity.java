@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Button signIn;
     private TextView createUser;
+    private Boolean confirmSignIn;
 
     FirebaseAuth mAuth;
 
@@ -49,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
         signIn = (Button) findViewById(R.id.button1);
         createUser = findViewById(R.id.textView2);
 
+        setConfirmsSignIn(false);
+
         mAuth = FirebaseAuth.getInstance();
 
         signIn.setOnClickListener(new View.OnClickListener() {
@@ -56,15 +59,19 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 signIn(emailET.getText().toString(), passwordET.getText().toString());
 
-                Intent intent = new Intent(MainActivity.this, MyCourseList.class);
-                startActivity(intent);
+                if (confirmSignIn) {
+                    Log.println(Log.ASSERT, TAG, "BEFORE NEW ACTIVITY:" + confirmSignIn.toString());
+                    Intent intent = new Intent(MainActivity.this, MyCourseList.class);
+                    startActivity(intent);
+                }else {
+                    Log.println(Log.ASSERT, TAG, "Please sign in again: " + confirmSignIn.toString());
+                }
             }
         });
 
         createUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Toast.makeText(MainActivity.this, "createNew pressed", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(MainActivity.this, SetupInitial.class);
                 startActivity(intent);
             }
@@ -72,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void signIn(String email, String password) {
+        Log.println(Log.ASSERT, TAG, "Button pressed:" + confirmSignIn.toString());
 
         //Goes through the Firebase Authentication to sign in
         mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -80,68 +88,36 @@ public class MainActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
                     // Sign in success, update UI with the signed-in user's information
-                    Log.println(Log.ASSERT, TAG, "SUCCESS!!");
-
+                    //Log.println(Log.ASSERT, TAG, "SUCCESS!!");
+                    setConfirmsSignIn(true);
+                    Log.println(Log.ASSERT, TAG, "TEST 2+ - after button & confirmed:" + confirmSignIn.toString());
                     FirebaseUser user = mAuth.getCurrentUser();
-                    //updateUI(user);
-                    } else {
-                    // If sign in fails, display a message to the user.
-                    Log.w(TAG, "signInWithEmail:failure", task.getException());
-                    Toast.makeText(MainActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
-                    //updateUI(null);
                     }
-//                  // [START_EXCLUDE]
-//
-//                  if (!task.isSuccessful()) {
-//                  mStatusTextView.setText(R.string.auth_failed);
-//                  }
-//
-//                  hideProgressDialog();
-//
-//                  // [END_EXCLUDE]                    }
-                            };
-                        });
+            };
+        });
     }
 
-//  //checks if user is already signed in
-
-//    @Override
-//    public void onStart() {
-//        super.onStart();
-//        // Check if user is signed in (non-null) and update UI accordingly.
-//        FirebaseUser currentUser = mAuth.getCurrentUser();
-//        updateUI(currentUser);
-//    }
-
-
-        public void updateUI (FirebaseUser user){
-            Toast.makeText(MainActivity.this, "updateUI", Toast.LENGTH_LONG).show();
-        }
-
-/*    private void updateUI(FirebaseUser user) {
-        hideProgressDialog();
+    private void updateUI(FirebaseUser user) {
         if (user != null) {
-            mStatusTextView.setText(getString(R.string.emailpassword_status_fmt,
-                    user.getEmail(), user.isEmailVerified()));
-            mDetailTextView.setText(getString(R.string.firebase_status_fmt, user.getUid()));
 
-            findViewById(R.id.emailPasswordButtons).setVisibility(View.GONE);
-            findViewById(R.id.emailPasswordFields).setVisibility(View.GONE);
-            findViewById(R.id.signedInButtons).setVisibility(View.VISIBLE);
+            //set fields to clear....
+            emailET.setVisibility(View.GONE);
+            passwordET.setVisibility(View.GONE);
 
-            findViewById(R.id.verifyEmailButton).setEnabled(!user.isEmailVerified());
+            //set prompt to restart sign in process again
+            Log.println(Log.ASSERT, TAG, "RETRY SIGN IN!!");
 
         } else {
-
-            mStatusTextView.setText(R.string.signed_out);
-            mDetailTextView.setText(null);
-
-            findViewById(R.id.emailPasswordButtons).setVisibility(View.VISIBLE);
-            findViewById(R.id.emailPasswordFields).setVisibility(View.VISIBLE);
-            findViewById(R.id.signedInButtons).setVisibility(View.GONE);
-
+            emailET.setVisibility(View.VISIBLE);
+            passwordET.setVisibility(View.VISIBLE);
         }
-//    }*/
-
-
     }
+
+    public Boolean getConfirmSignIn() {
+        return confirmSignIn;
+    }
+
+    public void setConfirmsSignIn(Boolean tf){
+        confirmSignIn = tf;
+    }
+}
