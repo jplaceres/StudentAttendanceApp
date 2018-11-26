@@ -2,6 +2,7 @@ package com.example.jplac.myapplication;
 
 import android.app.Fragment;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.AdapterView;
@@ -40,9 +41,20 @@ public class MyCourseList extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         myRef = FirebaseDatabase.getInstance().getReference();
 
         ListView list = (ListView) findViewById(R.id.list);
+        addCourse = (Button) findViewById(R.id.button);
+        addCourse.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MyCourseList.this, CourseSearch.class);
+                startActivity(intent);
+            }
+        });
+
+
 
     }
 

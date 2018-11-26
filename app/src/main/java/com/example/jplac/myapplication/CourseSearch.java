@@ -1,13 +1,22 @@
 package com.example.jplac.myapplication;
+import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserInfo;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -18,6 +27,7 @@ import java.util.Date;
 public class CourseSearch extends AppCompatActivity {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     CollectionReference courses = db.collection("Course");
+    CollectionReference students = db.collection("Student");
     private EditText courseDeptField;
     private EditText courseNumberField;
     private EditText courseSectionField;
@@ -25,11 +35,23 @@ public class CourseSearch extends AppCompatActivity {
     private String courseNumber;
     private String courseSelection;
     private Query queryCourse;
+    private Query queryStudent;
     private Button nextButton;
+    private String UID;
+    public String courseID;
 
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            for (UserInfo profile : user.getProviderData()) {
+                // UID specific to the provider
+                UID = profile.getUid();
+
+            }
+        }
+
 
         setContentView(R.layout.search_courses);
         courseDeptField = (EditText) findViewById(R.id.editText4);
@@ -62,10 +84,14 @@ public class CourseSearch extends AppCompatActivity {
                     for(QueryDocumentSnapshot document: task.getResult())
                     {
                         Course result = document.toObject(Course.class);
+                        addCoursetoList(result);
+                        Toast.makeText(getBaseContext(), "Added course to course list", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(CourseSearch.this, MyCourseList.class);
+                        startActivity(intent);
                     }
 
                 } else {
-
+                    Toast.makeText(CourseSearch.this, "Course not found, try again", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -73,6 +99,15 @@ public class CourseSearch extends AppCompatActivity {
 
 
 
+
+
+    }
+
+    public void addCoursetoList(Course addCourse)
+    {
+        courseID = (String) addCourse.getPrefix() + addCourse.getCode() + addCourse.getSection();
+        DocumentReference studentDoc = db.collection("Student").document(UID);
+        studentDoc.update("Courses", FieldValue.arrayUnion((String) courseID));
     }
 
 
