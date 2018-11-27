@@ -27,5 +27,7 @@
             android:label="New User"/>
         <activity android:name=".CheckIn"
             android:label="Check In"/>
+        <activity android:name=".CourseSearch"
+            android:label="CourseSearch"/>
     </application>
 </manifest>
