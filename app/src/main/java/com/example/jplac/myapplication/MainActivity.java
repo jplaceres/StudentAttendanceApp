@@ -97,21 +97,22 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void updateUI(FirebaseUser user) {
-        if (user != null) {
-
-            //set fields to clear....
-            emailET.setVisibility(View.GONE);
-            passwordET.setVisibility(View.GONE);
-
-            //set prompt to restart sign in process again
-            Log.println(Log.ASSERT, TAG, "RETRY SIGN IN!!");
-
-        } else {
-            emailET.setVisibility(View.VISIBLE);
-            passwordET.setVisibility(View.VISIBLE);
-        }
-    }
+//
+//    private void updateUI(FirebaseUser user) {
+//        if (user != null) {
+//
+//            //set fields to clear....
+//            emailET.setVisibility(View.GONE);
+//            passwordET.setVisibility(View.GONE);
+//
+//            //set prompt to restart sign in process again
+//            Log.println(Log.ASSERT, TAG, "RETRY SIGN IN!!");
+//
+//        } else {
+//            emailET.setVisibility(View.VISIBLE);
+//            passwordET.setVisibility(View.VISIBLE);
+//        }
+//    }
 
     public Boolean getConfirmSignIn() {
         return confirmSignIn;
