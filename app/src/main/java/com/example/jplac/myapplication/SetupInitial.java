@@ -21,6 +21,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 
 public class SetupInitial extends AppCompatActivity {
@@ -42,6 +44,8 @@ public class SetupInitial extends AppCompatActivity {
     private EditText editTextPassword;
     private EditText editTextPasswordConfirm;
     DatabaseReference mDatabase;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    CollectionReference students = db.collection("Student");
 
     //This is the oncreate, which will set the contentView, then obtain the edit texts by id, and match them to the corresponding edit text.
     @Override
@@ -50,7 +54,6 @@ public class SetupInitial extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
         setContentView(R.layout.user_setup1);
-        //nextButton = (Button) findViewById(R.id.button);
         editTextFirstName = (EditText) findViewById(R.id.editText);
         editTextLastName = (EditText) findViewById(R.id.editText2);
         editTextStudentID = (EditText) findViewById(R.id.editText3);
@@ -71,7 +74,7 @@ public class SetupInitial extends AppCompatActivity {
         editTextEmail = (EditText) findViewById(R.id.editText);
         editTextPassword = (EditText) findViewById(R.id.editText2);
         editTextPasswordConfirm = (EditText) findViewById(R.id.editText3);
-        Toast.makeText(this,editTextFirstName + " " + editTextLastName + " " + editTextStudentID, Toast.LENGTH_LONG).show();
+        Toast.makeText(this,firstName + " " + lastName + " " + studentID, Toast.LENGTH_LONG).show();
     }
 
 
@@ -87,8 +90,37 @@ public class SetupInitial extends AppCompatActivity {
 
         if (password.equals(passwordConfirm) && password.length() >= 4){
 
-            mAuth.createUserWithEmailAndPassword(email, password);
-            addUserToDatabase(email,firstName,lastName,studentID);
+            mAuth.createUserWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                // Sign in success, update UI with the signed-in user's information
+                                Log.d(TAG, "createUserWithEmail:success");
+                                FirebaseUser user = mAuth.getCurrentUser();
+                                String authenticationID = mAuth.getCurrentUser().getUid();
+                                Toast.makeText(SetupInitial.this,authenticationID, Toast.LENGTH_LONG);
+                                addUserToDatabase(email,firstName,lastName,studentID,authenticationID);
+                                Toast.makeText(SetupInitial.this,user.getEmail(),Toast.LENGTH_LONG).show();
+                                //updateUI(user);
+                                User user2 = new User(email,firstName,lastName,studentID,authenticationID);
+                                if(user.getUid().equals(user2.getEmail())){
+                                    Intent intentApp = new Intent(SetupInitial.this,CourseSearch.class);
+                                    SetupInitial.this.startActivity(intentApp);}
+                            } else {
+                                // If sign in fails, display a message to the user.
+                                Log.w(TAG, "createUserWithEmail:failure", task.getException());
+                                Toast.makeText(SetupInitial.this, "Authentication failed.",
+                                        Toast.LENGTH_SHORT).show();
+                                //updateUI(null);
+                            }
+
+                            // ...
+                        }
+                    });
+            //String authenticationID = mAuth.getCurrentUser().getUid();
+            //Toast.makeText(SetupInitial.this,authenticationID, Toast.LENGTH_LONG);
+            //addUserToDatabase(email,firstName,lastName,studentID,authenticationID);
 
 
             Intent intentApp = new Intent(SetupInitial.this,CourseSearch.class);
@@ -103,8 +135,10 @@ public class SetupInitial extends AppCompatActivity {
         }
     }
 
-    public void addUserToDatabase(String userEmail, String fName, String lName, String userID){
-        User user = new User(fName, userEmail, lName);
-        mDatabase.child("Student").child(userID).setValue(user);
+    public void addUserToDatabase(String userEmail, String fName, String lName, String userID, String authenticateID){
+        User user = new User(fName, userEmail, lName,authenticateID,userID);
+
+        db.collection("Student").document(userEmail).set(user);
+        //db.collection("Student").document(email).set(user);
     }
 }
