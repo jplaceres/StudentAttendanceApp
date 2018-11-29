@@ -58,6 +58,9 @@ public class CourseSearch extends AppCompatActivity {
         courseNumberField = (EditText) findViewById(R.id.editText6);
         courseSectionField = (EditText) findViewById(R.id.editText7);
         nextButton = (Button) findViewById(R.id.button);
+        courseDept = courseDeptField.getText().toString();
+        courseNumber = courseNumberField.getText().toString();
+        courseSelection = courseSectionField.getText().toString();
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -71,7 +74,7 @@ public class CourseSearch extends AppCompatActivity {
         courseNumber = courseNumberField.getText().toString();
         courseSelection = courseSectionField.getText().toString();
 
-        queryCourse = courses.whereEqualTo("Prefix", courseDept)
+        queryCourse = courses.whereEqualTo("Prefix", courseDept.toUpperCase())
                 .whereEqualTo("Code", courseNumber)
                 .whereEqualTo("Section", courseSelection);
 
