@@ -28,4 +28,8 @@ public class User {
     public String getFirstName() {
         return firstName;
     }
+
+    public String getAuthenticationID() {
+        return authenticationID;
+    }
 }
