@@ -52,6 +52,7 @@ public class SetupInitial extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mAuth = FirebaseAuth.getInstance();
+        mAuth.signOut();
         mDatabase = FirebaseDatabase.getInstance().getReference();
         setContentView(R.layout.user_setup1);
         editTextFirstName = (EditText) findViewById(R.id.editText);
@@ -88,7 +89,7 @@ public class SetupInitial extends AppCompatActivity {
         password = editTextPassword.getText().toString();
         passwordConfirm = editTextPasswordConfirm.getText().toString();
 
-        if (password.equals(passwordConfirm) && password.length() >= 4){
+        if (password.equals(passwordConfirm) && password.length() >= 6){
 
             mAuth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -104,9 +105,7 @@ public class SetupInitial extends AppCompatActivity {
                                 Toast.makeText(SetupInitial.this,user.getEmail(),Toast.LENGTH_LONG).show();
                                 //updateUI(user);
                                 User user2 = new User(email,firstName,lastName,studentID,authenticationID);
-                                if(user.getUid().equals(user2.getEmail())){
-                                    Intent intentApp = new Intent(SetupInitial.this,CourseSearch.class);
-                                    SetupInitial.this.startActivity(intentApp);}
+
                             } else {
                                 // If sign in fails, display a message to the user.
                                 Log.w(TAG, "createUserWithEmail:failure", task.getException());
@@ -122,9 +121,9 @@ public class SetupInitial extends AppCompatActivity {
             //Toast.makeText(SetupInitial.this,authenticationID, Toast.LENGTH_LONG);
             //addUserToDatabase(email,firstName,lastName,studentID,authenticationID);
 
-
+            if(mAuth.getCurrentUser().getEmail().equals(email)){
             Intent intentApp = new Intent(SetupInitial.this,CourseSearch.class);
-            SetupInitial.this.startActivity(intentApp);
+            SetupInitial.this.startActivity(intentApp);}
         }
         if(!password.equals(passwordConfirm)){
             Toast.makeText(this,"Passwords do not match, please check again",Toast.LENGTH_LONG).show();
