@@ -22,7 +22,10 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
 import java.util.Date;
+
+import static com.example.jplac.myapplication.MarkAttended.markAttended;
 
 public class CourseSearch extends AppCompatActivity {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -39,8 +42,6 @@ public class CourseSearch extends AppCompatActivity {
     private Button nextButton;
     private String UID;
     public String courseID;
-
-
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -48,11 +49,8 @@ public class CourseSearch extends AppCompatActivity {
             for (UserInfo profile : user.getProviderData()) {
                 // UID specific to the provider
                 UID = profile.getUid();
-
             }
         }
-
-
         setContentView(R.layout.search_courses);
         courseDeptField = (EditText) findViewById(R.id.editText4);
         courseNumberField = (EditText) findViewById(R.id.editText6);
@@ -68,7 +66,6 @@ public class CourseSearch extends AppCompatActivity {
             }
         });
     }
-
     public void search(){
         courseDept = courseDeptField.getText().toString();
         courseNumber = courseNumberField.getText().toString();
@@ -77,8 +74,6 @@ public class CourseSearch extends AppCompatActivity {
         queryCourse = courses.whereEqualTo("Prefix", courseDept.toUpperCase())
                 .whereEqualTo("Code", courseNumber)
                 .whereEqualTo("Section", courseSelection);
-
-
         queryCourse.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -92,34 +87,21 @@ public class CourseSearch extends AppCompatActivity {
                         Intent intent = new Intent(CourseSearch.this, MyCourseList.class);
                         startActivity(intent);
                     }
-
                 } else {
                     Toast.makeText(CourseSearch.this, "Course not found, try again", Toast.LENGTH_SHORT).show();
                 }
             }
         });
-
-
-
-
-
-
     }
-
     public void addCoursetoList(Course addCourse)
     {
         courseID = (String) addCourse.getPrefix() + addCourse.getCode() + addCourse.getSection();
         DocumentReference studentDoc = db.collection("Student").document(UID);
         studentDoc.update("Courses", FieldValue.arrayUnion((String) courseID));
+        studentAttendanceRecord newStudent = new studentAttendanceRecord();
+        db.collection(courseID).document(UID).set(newStudent);
     }
-
-
-
-
-
-
 }
-
 class Course {
     private String Prefix;
     private String Code;
@@ -198,4 +180,35 @@ class Course {
     }
 
 
+}
+
+class studentAttendanceRecord{
+    private ArrayList<String> datesPresent;
+    private ArrayList<String> datesAbsent;
+    private ArrayList<String> datesLate;
+
+    studentAttendanceRecord(ArrayList<String> datesPresent, ArrayList<String> datesAbsent, ArrayList<String> datesLate)
+    {
+        datesPresent = this.datesPresent;
+        datesAbsent = this.datesAbsent;
+        datesLate = this.datesLate;
+    }
+
+    studentAttendanceRecord(){
+
+    }
+
+    public ArrayList<String> getDatesPresent()
+    {
+        return datesPresent;
+    }
+
+    public ArrayList<String> getDatesLate(){
+        return datesLate;
+    }
+
+    public ArrayList<String> getDatesAbsent()
+    {
+        return datesAbsent;
+    }
 }
