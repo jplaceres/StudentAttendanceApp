@@ -37,6 +37,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -61,6 +62,7 @@ public class CheckIn extends AppCompatActivity {
     private ImageReader imageReader;
     CameraDevice cameraDevice;
     private String cameraId;
+    FirebaseFirestore db;
     private static final String TAG = "AndroidCameraApi";
     TextureView textureView;
     protected CameraCaptureSession cameraCaptureSessions;
@@ -70,6 +72,7 @@ public class CheckIn extends AppCompatActivity {
     private Handler mBackgroundHandler;
     private HandlerThread mBackgroundThread;
     FirebaseAuth mAuth;
+    String className;
     AlertDialog.Builder alert;
     private static final int REQUEST_CAMERA_PERMISSION = 200;
 
@@ -85,16 +88,20 @@ public class CheckIn extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.check_in_layout);
+        className = getIntent().getStringExtra("CLASS_NAME");
         mAuth = FirebaseAuth.getInstance();
         mStorage = FirebaseStorage.getInstance();
         storageReference =  mStorage.getReference();
+        db = FirebaseFirestore.getInstance();
         closeCamera();
         alert = new AlertDialog.Builder(this);
 
     }
 
     public void compareCode(String code){
-        
+        if(db.collection(className).document("secretCode").toString().equals(code)){
+            
+        };
     }
     public void takePicQr(View view){
        // setContentView(R.layout.camera_view);
