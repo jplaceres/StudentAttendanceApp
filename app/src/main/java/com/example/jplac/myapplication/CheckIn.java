@@ -93,7 +93,9 @@ public class CheckIn extends AppCompatActivity {
 
     }
 
-
+    public void compareCode(String code){
+        
+    }
     public void takePicQr(View view){
        // setContentView(R.layout.camera_view);
        // textureView = (TextureView) findViewById(R.id.surfaceView1);
@@ -108,12 +110,12 @@ public class CheckIn extends AppCompatActivity {
 
         alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-                String YouEditTextValue = edittext.getText().toString();
-
+                String code = edittext.getText().toString();
+                compareCode(code);
             }
         });
 
-        alert.setNegativeButton("No Cancel", new DialogInterface.OnClickListener() {
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 // what ever you want to do with No option.
             }
