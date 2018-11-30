@@ -2,6 +2,7 @@ package com.example.jplac.myapplication;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.graphics.ImageFormat;
 import android.graphics.SurfaceTexture;
@@ -14,6 +15,7 @@ import android.hardware.camera2.CameraMetadata;
 import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.TotalCaptureResult;
 import android.hardware.camera2.params.StreamConfigurationMap;
+import android.media.FaceDetector;
 import android.media.Image;
 import android.media.ImageReader;
 import android.os.Environment;
@@ -21,14 +23,17 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
 import android.util.Log;
 import android.util.Size;
 import android.util.SparseIntArray;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -50,7 +55,9 @@ public class CheckIn extends AppCompatActivity {
     CameraManager cameraManager;
     FirebaseStorage mStorage;
     StorageReference storageReference;
+    //FaceDetector detector;
     private File file;
+    int cameraChooser = 0;
     private ImageReader imageReader;
     CameraDevice cameraDevice;
     private String cameraId;
@@ -63,14 +70,15 @@ public class CheckIn extends AppCompatActivity {
     private Handler mBackgroundHandler;
     private HandlerThread mBackgroundThread;
     FirebaseAuth mAuth;
+    AlertDialog.Builder alert;
     private static final int REQUEST_CAMERA_PERMISSION = 200;
 
     private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
     static {
-        ORIENTATIONS.append(Surface.ROTATION_0, 90);
-        ORIENTATIONS.append(Surface.ROTATION_90, 0);
-        ORIENTATIONS.append(Surface.ROTATION_180, 270);
-        ORIENTATIONS.append(Surface.ROTATION_270, 180);
+        ORIENTATIONS.append(Surface.ROTATION_0, 0);
+        ORIENTATIONS.append(Surface.ROTATION_90, 90);
+        ORIENTATIONS.append(Surface.ROTATION_180, 180);
+        ORIENTATIONS.append(Surface.ROTATION_270, 270);
     }
 
     @Override
@@ -80,18 +88,46 @@ public class CheckIn extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         mStorage = FirebaseStorage.getInstance();
         storageReference =  mStorage.getReference();
+        closeCamera();
+        alert = new AlertDialog.Builder(this);
 
     }
 
 
     public void takePicQr(View view){
-        setContentView(R.layout.camera_view);
-        textureView = (TextureView) findViewById(R.id.surfaceView1);
-        textureView.setSurfaceTextureListener(textureListener);
+       // setContentView(R.layout.camera_view);
+       // textureView = (TextureView) findViewById(R.id.surfaceView1);
+       // cameraChooser = 0;
+       // textureView.setSurfaceTextureListener(textureListener);
+
+        final EditText edittext = new EditText(this);
+        alert.setMessage("Enter The Code");
+        alert.setTitle("Attendance");
+
+        alert.setView(edittext);
+
+        alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                String YouEditTextValue = edittext.getText().toString();
+
+            }
+        });
+
+        alert.setNegativeButton("No Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                // what ever you want to do with No option.
+            }
+        });
+
+        alert.show();
+
     }
     public void takePicFace(View view){
         setContentView(R.layout.camera_view);
         textureView = (TextureView) findViewById(R.id.surfaceView1);
+        cameraChooser = 1;
+        textureView.setSurfaceTextureListener(textureListener);
+
     }
     public void changeCourse(View view){
 
@@ -137,8 +173,9 @@ public class CheckIn extends AppCompatActivity {
         }
         @Override
         public void onError(CameraDevice camera, int error) {
+            if(cameraDevice != null){
             cameraDevice.close();
-            cameraDevice = null;
+            cameraDevice = null;}
         }
     };
     final CameraCaptureSession.CaptureCallback captureCallbackListener = new CameraCaptureSession.CaptureCallback() {
@@ -176,8 +213,8 @@ public class CheckIn extends AppCompatActivity {
             if (characteristics != null) {
                 jpegSizes = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP).getOutputSizes(ImageFormat.JPEG);
             }
-            int width = 640;
-            int height = 480;
+            int width = 500;
+            int height = 500;
             if (jpegSizes != null && 0 < jpegSizes.length) {
                 width = jpegSizes[0].getWidth();
                 height = jpegSizes[0].getHeight();
@@ -192,6 +229,7 @@ public class CheckIn extends AppCompatActivity {
             // Orientation
             int rotation = getWindowManager().getDefaultDisplay().getRotation();
             captureBuilder.set(CaptureRequest.JPEG_ORIENTATION, ORIENTATIONS.get(rotation));
+            final StorageReference imageRef = storageReference.child(mAuth.getCurrentUser().getEmail() + ".jpg");
             final File file = new File(Environment.getExternalStorageDirectory()+"/pic.jpg");
             ImageReader.OnImageAvailableListener readerListener = new ImageReader.OnImageAvailableListener() {
                 @Override
@@ -216,8 +254,9 @@ public class CheckIn extends AppCompatActivity {
                 private void save(byte[] bytes) throws IOException {
                     OutputStream output = null;
                     try {
-                        output = new FileOutputStream(file);
-                        output.write(bytes);
+                        //output = new FileOutputStream(file);
+                        //output.write(bytes);
+                        imageRef.putBytes(bytes);
                     } finally {
                         if (null != output) {
                             output.close();
@@ -283,7 +322,7 @@ public class CheckIn extends AppCompatActivity {
         CameraManager manager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
         Log.e(TAG, "is camera open");
         try {
-            cameraId = manager.getCameraIdList()[0];
+            cameraId = manager.getCameraIdList()[cameraChooser];
             CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraId);
             StreamConfigurationMap map = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
             assert map != null;
@@ -319,6 +358,10 @@ public class CheckIn extends AppCompatActivity {
             imageReader.close();
             imageReader = null;
         }
+    }
+    public void returnToCheckIn(View v){
+        setContentView(R.layout.check_in_layout);
+        cameraDevice.close();
     }
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
