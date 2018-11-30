@@ -4,10 +4,11 @@
     android:layout_height="match_parent">
 
     <LinearLayout
+        android:id="@+id/indCourse"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
 
+        android:orientation="horizontal"
         android:weightSum="3">
 
         <LinearLayout
@@ -62,7 +63,6 @@
                     android:maxLines="1"
                     android:singleLine="true"
                     android:text="Section: " />
-
 
 
             </LinearLayout>
