@@ -1,17 +1,14 @@
 package com.example.jplac.myapplication;
 
-import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.LayoutInflater;
+import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -29,28 +26,30 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class MyCourseList extends AppCompatActivity {
-    public static Course courseClass;
 
-    private Button addCourse, present, remove;
+    private static final String TAG = "TEST";
+
+    private Button addCourse;
     private String UID;
     private String coursePrefix;
     private String courseCode;
     private String courseSection;
     private Query queryCourse;
 
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    FirebaseFirestore db;
     CollectionReference courses = db.collection("Course");
+    FirebaseUser user;
 
     private List<String> courseTexts;
     private ArrayList<Course> coursesTaking;
     private ArrayList<String> courseTitle, courseNumCode, section, professor, absences;
-    private ListView list;
-
+    private ListView listRow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,21 +58,55 @@ public class MyCourseList extends AppCompatActivity {
 
         coursesTaking = new ArrayList<Course>();
         courseTitle = new ArrayList<String>();
+        courseNumCode = new ArrayList<String>();
+        section = new ArrayList<String>();
+        professor = new ArrayList<String>();
+        absences = new ArrayList<String>();
 
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        db = FirebaseFirestore.getInstance();
+        user = FirebaseAuth.getInstance().getCurrentUser();
+
+        listRow = findViewById(R.id.list);
 
         if (user != null) {
             for (UserInfo profile : user.getProviderData()) {
                 // UID specific to the provider
                 UID = profile.getUid();
             }
+        } else {
+            Toast.makeText(MyCourseList.this, "UID = null", Toast.LENGTH_LONG).show();
         }
 
-
-
-
         DocumentReference studentDoc = db.collection("Student").document(UID);
+        inquire(studentDoc);
+
+        MyAdapter adapter = new MyAdapter(this, courseTitle, courseNumCode, section, professor, absences);
+        listRow.setAdapter(adapter);
+
+        listRow.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Log.println(Log.ASSERT, TAG, "clicked on: " + i);
+
+//                Intent mIntent = new Intent(MyCourseList.this, CheckIn.class);
+////          mIntent.putExtra("countryName", countryNames[i]);
+////          mIntent.putExtra("countryFlag", countryFlags[i]);
+//                startActivity(mIntent);
+            }
+        });
+
+        addCourse = (Button) findViewById(R.id.button);
+        addCourse.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MyCourseList.this, CourseSearch.class);
+                startActivity(intent);
+            }
+        });
+    }
+
+
+    public void inquire(DocumentReference studentDoc) {
         studentDoc.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -82,10 +115,8 @@ public class MyCourseList extends AppCompatActivity {
                 if (courseTexts != null) {
                     for (String shortC : courseTexts) {
 
-                        //course
                         coursePrefix = shortC.substring(0, 3);
                         courseCode = shortC.substring(3, 7);
-                        //section
                         courseSection = shortC.substring(7, 9);
 
                         queryCourse = courses.whereEqualTo("Prefix", coursePrefix)
@@ -104,6 +135,7 @@ public class MyCourseList extends AppCompatActivity {
                             }
                         });
                     }
+
                     for (Course c : coursesTaking) {
                         courseTitle.add(c.getName());
                         courseNumCode.add(c.getPrefix() + c.getCode());
@@ -112,90 +144,13 @@ public class MyCourseList extends AppCompatActivity {
 
                         //ADD ABSENCES ARRAY
                         absences.add("0");
+
                     }
                 } else {
                     Toast.makeText(getBaseContext(), "Courses not found!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
-
-        list = (ListView) findViewById(R.id.list);
-        MyAdapter adapter = new MyAdapter(this, courseTitle, courseNumCode, section, professor, absences, present, remove);
-        list.setAdapter(adapter);
-
-        addCourse = (Button) findViewById(R.id.button);
-        addCourse.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MyCourseList.this, CourseSearch.class);
-                startActivity(intent);
-            }
-        });
-    }
-
-    class MyAdapter extends ArrayAdapter<String> {
-        Context context;
-        ArrayList<String> myCourseTitle, myCourseNumCode, mySection, myProfessor, myAbsences;
-        Button myPresent, myRemove;
-
-        MyAdapter(Context c,
-                  ArrayList<String> courseTitle,
-                  ArrayList<String> courseNumCode,
-                  ArrayList<String> section,
-                  ArrayList<String> professor,
-                  ArrayList<String> absences,
-                  Button present,
-                  Button remove) {
-            super(c, R.layout.individual_course, R.id.indCourse);
-            this.context = c;
-            this.myCourseTitle = courseTitle;
-            this.myCourseNumCode = courseNumCode;
-            this.mySection = section;
-            this.myProfessor = professor;
-            this.myAbsences = absences;
-            this.myPresent = present;
-            this.myRemove = remove;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            LayoutInflater inflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View row = inflater.inflate(R.layout.individual_course, parent, false);
-            TextView ct = (TextView) findViewById(R.id.courseTitle);
-            TextView cn = (TextView) findViewById(R.id.Course);
-            TextView s = (TextView) findViewById(R.id.Section);
-            TextView p = (TextView) findViewById(R.id.Professor);
-            TextView a = (TextView) findViewById(R.id.Absences);
-            TextView cnTV = (TextView) findViewById(R.id.CourseTV);
-            TextView sTV = (TextView) findViewById(R.id.SectionTV);
-            TextView pTV = (TextView) findViewById(R.id.ProfessorTV);
-            TextView aTV = (TextView) findViewById(R.id.AbsencesTV);
-            final Button present = (Button) findViewById(R.id.Present);
-            final Button remove = (Button) findViewById(R.id.Remove);
-
-            ct.setText(myCourseTitle.get(position));
-            cn.setText(myCourseNumCode.get(position));
-            s.setText(mySection.get(position));
-            p.setText(myProfessor.get(position));
-            a.setText(myAbsences.get(position));
-
-            present.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(MyCourseList.this, CheckIn.class);
-                    startActivity(intent);
-                }
-            });
-
-            remove.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //
-                }
-            });
-
-            return row;
-        }
     }
 }
 
@@ -208,29 +163,51 @@ class Student {
     private String authenticationID;
     private String email;
 
-    public Student() { }
-
-    public Student(List<String> Courses, String firstName, String userID, String imageRef, String lastName, String email, String authenticationID) {
-        firstName = this.firstName;
-        lastName = this.lastName;
-        imageRef = this.imageRef;
-        userID = this.userID;
-        Courses = this.Courses;
-        authenticationID = this.authenticationID;
-        email = this.email;
+    public Student() {
     }
 
-    public String getfName() { return firstName; }
+    public Student(List<String> Courses, String firstName, String userID, String imageRef, String lastName, String email, String authenticationID) {
+//        firstName = this.firstName;
+//        lastName = this.lastName;
+//        imageRef = this.imageRef;
+//        userID = this.userID;
+//        Courses = this.Courses;
+//        authenticationID = this.authenticationID;
+//        email = this.email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.imageRef = imageRef;
+        this.userID = userID;
+        this.Courses = Courses;
+        this.authenticationID = authenticationID;
+        this.email = email;
+    }
 
-    public String getlName() { return lastName; }
+    public String getfName() {
+        return firstName;
+    }
 
-    public String getImageRef() { return imageRef; }
+    public String getlName() {
+        return lastName;
+    }
 
-    public String getID() { return userID; }
+    public String getImageRef() {
+        return imageRef;
+    }
 
-    public List<String> getCourses() { return Courses; }
+    public String getID() {
+        return userID;
+    }
 
-    public String getAuthID() { return authenticationID; }
+    public List<String> getCourses() {
+        return Courses;
+    }
 
-    public String getEmail() { return email; }
+    public String getAuthID() {
+        return authenticationID;
+    }
+
+    public String getEmail() {
+        return email;
+    }
 }

@@ -58,7 +58,6 @@ public class SetupInitial extends AppCompatActivity {
         editTextFirstName = (EditText) findViewById(R.id.editText);
         editTextLastName = (EditText) findViewById(R.id.editText2);
         editTextStudentID = (EditText) findViewById(R.id.editText3);
-
     }
 
 
