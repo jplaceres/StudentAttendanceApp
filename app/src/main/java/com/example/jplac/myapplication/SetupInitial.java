@@ -101,10 +101,11 @@ public class SetupInitial extends AppCompatActivity {
                                 FirebaseUser user = mAuth.getCurrentUser();
                                 String authenticationID = mAuth.getCurrentUser().getUid();
                                 Toast.makeText(SetupInitial.this,authenticationID, Toast.LENGTH_LONG);
-                                addUserToDatabase(email,firstName,lastName,studentID,authenticationID);
                                 Toast.makeText(SetupInitial.this,user.getEmail(),Toast.LENGTH_LONG).show();
+                                addUserToDatabase(email,firstName,lastName,studentID,authenticationID);
+
                                 //updateUI(user);
-                                User user2 = new User(email,firstName,lastName,studentID,authenticationID);
+
 
                             } else {
                                 // If sign in fails, display a message to the user.
@@ -121,9 +122,9 @@ public class SetupInitial extends AppCompatActivity {
             //Toast.makeText(SetupInitial.this,authenticationID, Toast.LENGTH_LONG);
             //addUserToDatabase(email,firstName,lastName,studentID,authenticationID);
 
-            if(mAuth.getCurrentUser().getEmail().equals(email)){
-            Intent intentApp = new Intent(SetupInitial.this,CourseSearch.class);
-            SetupInitial.this.startActivity(intentApp);}
+            //if(mAuth.getCurrentUser().getEmail().equals(email)){
+            //Intent intentApp = new Intent(SetupInitial.this,CourseSearch.class);
+            //SetupInitial.this.startActivity(intentApp);
         }
         if(!password.equals(passwordConfirm)){
             Toast.makeText(this,"Passwords do not match, please check again",Toast.LENGTH_LONG).show();
@@ -139,5 +140,11 @@ public class SetupInitial extends AppCompatActivity {
 
         db.collection("Student").document(userEmail).set(user);
         //db.collection("Student").document(email).set(user);
+
+
+
+
+        Intent intentApp = new Intent(SetupInitial.this,CourseSearch.class);
+        SetupInitial.this.startActivity(intentApp);
     }
 }

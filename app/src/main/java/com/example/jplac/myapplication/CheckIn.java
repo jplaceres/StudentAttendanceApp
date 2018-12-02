@@ -3,6 +3,7 @@ package com.example.jplac.myapplication;
 import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.ImageFormat;
 import android.graphics.SurfaceTexture;
@@ -34,6 +35,7 @@ import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -88,8 +90,10 @@ public class CheckIn extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.check_in_layout);
-        className = getIntent().getStringExtra("CLASS_NAME");
+        className = getIntent().getStringExtra("COURSE_TITLE");
         mAuth = FirebaseAuth.getInstance();
+        TextView tv1 = (TextView) findViewById(R.id.textView1);
+        tv1.setText(className);
         mStorage = FirebaseStorage.getInstance();
         storageReference =  mStorage.getReference();
         db = FirebaseFirestore.getInstance();
@@ -139,7 +143,8 @@ public class CheckIn extends AppCompatActivity {
 
     }
     public void changeCourse(View view){
-
+        Intent intent = new Intent(CheckIn.this, MyCourseList.class);
+        startActivity(intent);
     }
     public void returnMessage(boolean error){
         if (error){

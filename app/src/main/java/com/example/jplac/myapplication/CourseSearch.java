@@ -97,7 +97,7 @@ public class CourseSearch extends AppCompatActivity {
     {
         courseID = (String) addCourse.getPrefix() + addCourse.getCode() + addCourse.getSection();
         DocumentReference studentDoc = db.collection("Student").document(UID);
-        studentDoc.update("Courses", FieldValue.arrayUnion((String) courseID));
+        studentDoc.update("courses", FieldValue.arrayUnion((String) courseID));
         studentAttendanceRecord newStudent = new studentAttendanceRecord();
         db.collection(courseID).document(UID).set(newStudent);
     }

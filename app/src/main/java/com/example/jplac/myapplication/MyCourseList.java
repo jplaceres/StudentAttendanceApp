@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -50,6 +51,7 @@ public class MyCourseList extends AppCompatActivity {
     private ArrayList<Course> coursesTaking;
     private ArrayList<String> courseTitle, courseNumCode, section, professor, absences;
     private ListView list;
+    FirebaseAuth mAuth;
 
 
     @Override
@@ -70,58 +72,34 @@ public class MyCourseList extends AppCompatActivity {
             }
         }
 
+        list = (ListView) findViewById(R.id.list);
+        ArrayList<String> courseList;
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
+                String classCourse = list.getItemAtPosition(position).toString();
 
-        DocumentReference studentDoc = db.collection("Student").document(UID);
-        studentDoc.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                Student loggedStudent = documentSnapshot.toObject(Student.class);
-                courseTexts = loggedStudent.getCourses();
-                if (courseTexts != null) {
-                    for (String shortC : courseTexts) {
+                Intent intentApp = new Intent(MyCourseList.this,CheckIn.class);
+                intentApp.putExtra("COURSE_TITLE", classCourse);
+                MyCourseList.this.startActivity(intentApp);
 
-                        //course
-                        coursePrefix = shortC.substring(0, 3);
-                        courseCode = shortC.substring(3, 7);
-                        //section
-                        courseSection = shortC.substring(7, 9);
-
-                        queryCourse = courses.whereEqualTo("Prefix", coursePrefix)
-                                .whereEqualTo("Code", courseCode)
-                                .whereEqualTo("Section", courseSection);
-
-                        queryCourse.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                if (task.isSuccessful()) {
-                                    for (QueryDocumentSnapshot document : task.getResult()) {
-                                        Course searchresult = document.toObject(Course.class);
-                                        coursesTaking.add(searchresult);
-                                    }
-                                }
-                            }
-                        });
-                    }
-                    for (Course c : coursesTaking) {
-                        courseTitle.add(c.getName());
-                        courseNumCode.add(c.getPrefix() + c.getCode());
-                        section.add(c.getSection());
-                        professor.add(c.getProfessor());
-
-                        //ADD ABSENCES ARRAY
-                        absences.add("0");
-                    }
-                } else {
-                    Toast.makeText(getBaseContext(), "Courses not found!", Toast.LENGTH_SHORT).show();
-                }
             }
         });
 
-        list = (ListView) findViewById(R.id.list);
-        MyAdapter adapter = new MyAdapter(this, courseTitle, courseNumCode, section, professor, absences, present, remove);
-        list.setAdapter(adapter);
+
+        DocumentReference documentReference = db.collection("Student").document(user.getEmail());
+        documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                User user2 = documentSnapshot.toObject(User.class);
+                Toast.makeText(getApplicationContext(),user2.getEmail(),Toast.LENGTH_LONG).show();
+                ArrayAdapter adapter2 = new ArrayAdapter<String>(getApplicationContext(),android.R.layout.simple_list_item_1,user2.getCourses());
+                list.setAdapter(adapter2);
+
+            }
+        });
+       // Toast.makeText(this,courseTitle.get(0),Toast.LENGTH_LONG);
 
         addCourse = (Button) findViewById(R.id.button);
         addCourse.setOnClickListener(new View.OnClickListener() {
@@ -133,71 +111,7 @@ public class MyCourseList extends AppCompatActivity {
         });
     }
 
-    class MyAdapter extends ArrayAdapter<String> {
-        Context context;
-        ArrayList<String> myCourseTitle, myCourseNumCode, mySection, myProfessor, myAbsences;
-        Button myPresent, myRemove;
-
-        MyAdapter(Context c,
-                  ArrayList<String> courseTitle,
-                  ArrayList<String> courseNumCode,
-                  ArrayList<String> section,
-                  ArrayList<String> professor,
-                  ArrayList<String> absences,
-                  Button present,
-                  Button remove) {
-            super(c, R.layout.individual_course, R.id.indCourse);
-            this.context = c;
-            this.myCourseTitle = courseTitle;
-            this.myCourseNumCode = courseNumCode;
-            this.mySection = section;
-            this.myProfessor = professor;
-            this.myAbsences = absences;
-            this.myPresent = present;
-            this.myRemove = remove;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            LayoutInflater inflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View row = inflater.inflate(R.layout.individual_course, parent, false);
-            TextView ct = (TextView) findViewById(R.id.courseTitle);
-            TextView cn = (TextView) findViewById(R.id.Course);
-            TextView s = (TextView) findViewById(R.id.Section);
-            TextView p = (TextView) findViewById(R.id.Professor);
-            TextView a = (TextView) findViewById(R.id.Absences);
-            TextView cnTV = (TextView) findViewById(R.id.CourseTV);
-            TextView sTV = (TextView) findViewById(R.id.SectionTV);
-            TextView pTV = (TextView) findViewById(R.id.ProfessorTV);
-            TextView aTV = (TextView) findViewById(R.id.AbsencesTV);
-            final Button present = (Button) findViewById(R.id.Present);
-            final Button remove = (Button) findViewById(R.id.Remove);
-
-            ct.setText(myCourseTitle.get(position));
-            cn.setText(myCourseNumCode.get(position));
-            s.setText(mySection.get(position));
-            p.setText(myProfessor.get(position));
-            a.setText(myAbsences.get(position));
-
-            present.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(MyCourseList.this, CheckIn.class);
-                    startActivity(intent);
-                }
-            });
-
-            remove.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //
-                }
-            });
-
-            return row;
-        }
     }
-}
 
 class Student {
     private String firstName;
