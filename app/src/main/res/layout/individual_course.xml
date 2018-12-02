@@ -112,25 +112,25 @@
 
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="2"
-            android:orientation="vertical">
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="center_vertical"-->
+            <!--android:layout_weight="2"-->
+            <!--android:orientation="vertical">-->
 
-            <Button
-                android:id="@+id/Present"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/present" />
+            <!--<Button-->
+                <!--android:id="@+id/Present"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="@string/present" />-->
 
-            <Button
-                android:id="@+id/Remove"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/removeCourse" />
-        </LinearLayout>
+            <!--<Button-->
+                <!--android:id="@+id/Remove"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="@string/removeCourse" />-->
+        <!--</LinearLayout>-->
 
     </LinearLayout>
 
